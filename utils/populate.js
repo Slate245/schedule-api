@@ -13,7 +13,7 @@ function populateWorkingHours(date) {
   return workingHours;
 }
 
-export async function createSchedule() {
+module.exports = async function createSchedule() {
   const date = new Date("January 7 2020");
   const workingHours = populateWorkingHours(date);
   const schedule = new Schedule({
@@ -87,4 +87,4 @@ export async function createSchedule() {
   });
   const result = await schedule.save();
   console.log(result);
-}
+};
