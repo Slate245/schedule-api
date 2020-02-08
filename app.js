@@ -6,6 +6,7 @@ const app = express();
 
 require("./startup/cors")(app);
 require("./startup/routes")(app);
+require("./startup/time")();
 require("./startup/db")();
 
 const port = process.env.PORT || 3900;
