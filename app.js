@@ -2,6 +2,10 @@ require("dotenv").config();
 
 const express = require("express");
 
+process.on("unhandledRejection", ex => {
+  throw ex;
+});
+
 const app = express();
 
 require("./startup/cors")(app);

@@ -80,7 +80,6 @@ function validateSchedule(schedule) {
       .required(),
     plannedActivities: Joi.array()
       .items(plannedActivitySchema)
-      .min(1)
       .required(),
     __v: Joi.number()
   });

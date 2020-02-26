@@ -1,5 +1,6 @@
 const { DateTime } = require("luxon");
 const { Schedule, validate } = require("../models/schedule");
+const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 
@@ -34,6 +35,28 @@ router.post("/", async (req, res) => {
     }
     return res.status(500).send(ex.message);
   }
+});
+
+router.put("/:id", async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).send("Invalid ID");
+  }
+  const { error } = validate(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  const schedule = await Schedule.findByIdAndUpdate(
+    req.params.id,
+    { plannedActivities: req.body.plannedActivities },
+    { new: true }
+  );
+
+  if (!schedule) {
+    return res.status(404).send("Schedule with a given ID was not found");
+  }
+
+  res.send(schedule);
 });
 
 module.exports = router;
