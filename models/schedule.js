@@ -72,7 +72,6 @@ function validateSchedule(schedule) {
     }).required()
   });
   const schema = Joi.object({
-    _id: Joi.objectId(),
     date: Joi.date().required(),
     workingHours: Joi.array()
       .items(Joi.date())

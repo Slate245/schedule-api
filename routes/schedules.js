@@ -1,6 +1,6 @@
+const validateObjectId = require("../middleware/validateObjectId");
 const { DateTime } = require("luxon");
 const { Schedule, validate } = require("../models/schedule");
-const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 
@@ -37,10 +37,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(400).send("Invalid ID");
-  }
+router.put("/:id", validateObjectId, async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
