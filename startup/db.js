@@ -5,7 +5,8 @@ module.exports = function() {
     .connect(process.env.DB_STRING, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: false
+      useFindAndModify: false,
+      useCreateIndex: true
     })
     .then(() => console.log(`Connected to ${process.env.DB_STRING}...`))
     .catch(err => console.error("Could not connect to MongoDB...", err));
