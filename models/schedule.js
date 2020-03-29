@@ -25,6 +25,10 @@ const Schedule = mongoose.model(
       type: Date,
       required: true
     },
+    ownerId: {
+      type: mongoose.ObjectId,
+      required: true
+    },
     workingHours: {
       type: [Date],
       required: true
@@ -73,6 +77,7 @@ function validateSchedule(schedule) {
   });
   const schema = Joi.object({
     date: Joi.date().required(),
+    ownerId: Joi.objectId().required(),
     workingHours: Joi.array()
       .items(Joi.date())
       .min(1)

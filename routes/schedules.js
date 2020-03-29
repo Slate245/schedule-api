@@ -1,15 +1,21 @@
 const validateObjectId = require("../middleware/validateObjectId");
+const auth = require("../middleware/auth");
 const { DateTime } = require("luxon");
 const { Schedule, validate } = require("../models/schedule");
 const express = require("express");
 const router = express.Router();
+
+router.use(auth);
 
 router.get("/:date", async (req, res) => {
   const date = DateTime.fromISO(req.params.date);
   if (!date.isValid) {
     return res.status(400).send("Invalid date");
   }
-  const schedule = await Schedule.findOne({ date: date.toJSON() });
+  const schedule = await Schedule.findOne({
+    date: date.toJSON(),
+    ownerId: req.user._id
+  });
   res.send(schedule);
 });
 
@@ -19,12 +25,18 @@ router.post("/", async (req, res) => {
   if (req.body._id && (await Schedule.findById(req.body._id))) {
     return res.status(400).send("Schedule already exists");
   }
-  if (await Schedule.findOne({ date: req.body.date })) {
+  if (await Schedule.findOne({ date: req.body.date, ownerId: req.user._id })) {
     return res.status(400).send("Schedule for a given date already exists");
   }
 
   const { date, workingHours, plannedActivities } = req.body;
-  const schedule = new Schedule({ date, workingHours, plannedActivities });
+  const ownerId = req.user._id;
+  const schedule = new Schedule({
+    date,
+    ownerId,
+    workingHours,
+    plannedActivities
+  });
 
   try {
     await schedule.save();
