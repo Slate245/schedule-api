@@ -5,8 +5,9 @@ const router = express.Router();
 
 router.use(auth);
 
-router.get("/", (req, res) => {
-  res.send(req.user);
+router.get("/", async (req, res) => {
+  const activities = await Activity.find({ ownerId: req.user._id });
+  res.send(activities);
 });
 
 router.post("/", async (req, res) => {
