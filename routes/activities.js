@@ -17,13 +17,13 @@ router.post("/", async (req, res) => {
     return res.status(400).send("Activity already exists");
   }
 
-  const { name, preferredInterval, expectedDuration, description } = req.body;
-  const ownerId = req.user._id;
-  const obj = { ownerId, name, preferredInterval, expectedDuration };
-  if (description) {
-    obj.description = description;
+  const activityObject = { ...req.body };
+  if (activityObject.description === "") {
+    delete activityObject.description;
   }
-  const activity = new Activity(obj);
+  activityObject.ownerId = req.user._id;
+
+  const activity = new Activity(activityObject);
 
   try {
     await activity.save();
