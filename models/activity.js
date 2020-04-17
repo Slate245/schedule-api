@@ -16,11 +16,11 @@ const Activity = mongoose.model(
     },
     preferredInterval: new mongoose.Schema({
       start: {
-        type: Date,
+        type: String,
         required: true,
       },
       end: {
-        type: Date,
+        type: String,
         required: true,
       },
     }),
@@ -38,15 +38,14 @@ const Activity = mongoose.model(
 
 function validateActivity(activity) {
   const schema = Joi.object({
-    ownerId: Joi.objectId().required(),
     name: Joi.string().min(1).required(),
     preferredInterval: Joi.object({
       _id: Joi.objectId(),
       start: Joi.date().format("HH:mm:ssZ").required(),
       end: Joi.date().format("HH:mm:ssZ").required().greater(Joi.ref("start")),
     }).required(),
-    expectedDuration: Joi.number().min(0).max(840).required(),
-    description: Joi.string(),
+    expectedDuration: Joi.number().min(0).max(840).multiple(15).required(),
+    description: Joi.string().allow(""),
   });
 
   return schema.validate(activity);
