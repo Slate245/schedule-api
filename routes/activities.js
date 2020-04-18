@@ -36,4 +36,31 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  if (req.body.ownerId && req.body.ownerId !== req.user._id) {
+    return res.status(401).send("Access to activities of another user denied.");
+  }
+  delete req.body.ownerId;
+  if (req.body.__v) delete req.body.__v;
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const activityObject = { ...req.body };
+  if (activityObject.description === "") {
+    delete activityObject.description;
+  }
+  const activity = await Activity.findByIdAndUpdate(
+    req.params.id,
+    activityObject,
+    {
+      new: true,
+    }
+  );
+  if (!activity) {
+    return res.status(404).send("Activity with a given ID was not found");
+  }
+
+  res.send(activity);
+});
+
 module.exports = router;
