@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 
-process.on("unhandledRejection", ex => {
+process.on("unhandledRejection", (ex) => {
   throw ex;
 });
 
@@ -12,6 +12,7 @@ require("./startup/cors")(app);
 require("./startup/routes")(app);
 require("./startup/time")();
 require("./startup/db")();
+require("./startup/prod")(app);
 
 const port = process.env.PORT || 3900;
 const server = app.listen(port, () =>
